@@ -1,0 +1,9 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="asm_analyzer:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/asm_analyzer_jar</output-path>
+    <root id="archive" name="asm_analyzer.jar">
+      <element id="module-output" name="asm_analyzer" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/asm-9.6.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>
