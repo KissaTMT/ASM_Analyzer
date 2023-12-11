@@ -8,7 +8,6 @@ public class MorningVisitor extends ClassVisitor {
     private int fieldCount;
     private int localVariableCount;
     private int methodCount;
-    private int opcodeCount;
     private int conditionalTransition;
     private HashMap<String, ArrayList<Integer>> opcodes;
 
@@ -21,7 +20,7 @@ public class MorningVisitor extends ClassVisitor {
     @Override
     public MethodVisitor visitMethod(int access, String name, String descriptor, String signature, String[] exceptions) {
         methodCount++;
-        var mv = super.visitMethod(access, name, descriptor, signature, exceptions);
+        var mv = super.visitMethod(Opcodes.ACC_PUBLIC, name, descriptor, signature, exceptions);
         return new MethodVisitor(super.api,mv) {
             @Override
             public void visitTryCatchBlock(Label start, Label end, Label handler, String type) {
@@ -29,21 +28,12 @@ public class MorningVisitor extends ClassVisitor {
                 super.visitTryCatchBlock(start, end, handler, type);
             }
             @Override
-            public void visitInsn(int opcode) {
-                opcodeCount++;
-                if(opcodes.containsKey(name)){
-                    opcodes.get(name).add(opcode);
-                }
-                else opcodes.put(name,new ArrayList<>(Arrays.asList(opcode)));
-            }
-            @Override
             public void visitJumpInsn(int opcode, Label label) {
-                if(opcode >= Opcodes.IFEQ && opcode<= Opcodes.IF_ACMPNE || opcode == Opcodes.IFNONNULL || opcode == Opcodes.IFNULL){
+                if (opcode >= Opcodes.IFEQ && opcode <= Opcodes.IF_ACMPNE || opcode == Opcodes.IFNONNULL || opcode == Opcodes.IFNULL) {
                     conditionalTransition++;
                 }
                 super.visitJumpInsn(opcode, label);
             }
-
             @Override
             public void visitLocalVariable(String name, String descriptor, String signature, Label start, Label end, int index) {
                 localVariableCount++;
@@ -67,9 +57,6 @@ public class MorningVisitor extends ClassVisitor {
     }
     public int getConditionalTransition(){
         return conditionalTransition;
-    }
-    public int getOpcodeCount(){
-        return opcodeCount;
     }
 
     public HashMap<String, ArrayList<Integer>> getOpcodes() {

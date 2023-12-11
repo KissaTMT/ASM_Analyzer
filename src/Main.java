@@ -9,16 +9,23 @@ public class Main {
         System.out.println("Count of declaring variables: " + analyzer.getDeclaringVariables());
         System.out.println("Count of conditional transition: " + analyzer.getConditionalTransition());
         System.out.println("Count of methods: " + analyzer.getMethodCount());
-        System.out.println("Count of opcode: " + analyzer.getOpcodeCount());
-        var opcodes = analyzer.getOpcodes();
-        for(var key : opcodes.keySet()){
-            var list = opcodes.get(key);
-            var size = list.size();
-            System.out.println(key);
-            for(var i=0;i<size;i++){
-                System.out.println(String.format("0x%02X", list.get(i)));
+        System.out.println("Count of cycle: " + analyzer.getCycleCount());
+
+        System.out.println();
+
+        var opcodesCycle = analyzer.getOpcodesCycle();
+        for(var method: opcodesCycle.keySet()){
+            System.out.println(method);
+            var opcodes = opcodesCycle.get(method);
+            for(var opcode : opcodes){
+                System.out.println(opcode);
             }
-            System.out.println();
         }
+        System.out.println("Count of opcodes cycle: " + analyzer.calculateOpcodesCycle());
+
+        System.out.println();
+
+        analyzer.printClass();
     }
+
 }
