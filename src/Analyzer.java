@@ -30,10 +30,12 @@ public class Analyzer {
                 var instruction = instructions.get(i);
                 if (instruction instanceof JumpInsnNode) {
                     var jumpInsn = (JumpInsnNode) instruction;
-                    if(i> instructions.indexOf(jumpInsn.label)){
+                    var label = jumpInsn.label;
+                    if(i> instructions.indexOf(label)){
                         if(!opcodesCycles.containsKey(method.name)) {
                             opcodesCycles.put(method.name,new ArrayList<>());
-                            opcodesCycles.get(method.name).addAll(getOpcodes(instructions, jumpInsn));
+                            var end = instructions.indexOf(label);
+                            opcodesCycles.get(method.name).addAll(getOpcodes(instructions, i,end));
                         }
                         counter++;
                     }
@@ -52,6 +54,17 @@ public class Analyzer {
                 if(instruction.getOpcode()!=-1) System.out.println(instruction.getOpcode());
             }
         }
+    }
+    private ArrayList<Integer> getOpcodes(InsnList instructions, int end, int begin){
+        var result = new ArrayList<Integer>();
+
+        for(var i=begin;i<=end;i++) {
+            if (instructions.get(i).getOpcode() != -1) {
+                result.add(instructions.get(i).getOpcode());
+            }
+        }
+
+        return result;
     }
     private ArrayList<Integer> getOpcodes(InsnList instructions, JumpInsnNode jump){
         var opcodes = new ArrayList<Integer>();
