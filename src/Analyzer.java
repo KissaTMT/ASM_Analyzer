@@ -66,25 +66,6 @@ public class Analyzer {
 
         return result;
     }
-    private ArrayList<Integer> getOpcodes(InsnList instructions, JumpInsnNode jump){
-        var opcodes = new ArrayList<Integer>();
-        for(var i = instructions.indexOf(jump);i>=0;i--) {
-            var instruction = instructions.get(i);
-            if (instruction.getOpcode() != -1) {
-                opcodes.add(instruction.getOpcode());
-                if (instruction instanceof JumpInsnNode) {
-                    if (instructions.indexOf(((JumpInsnNode) instruction).label) > instructions.indexOf(jump)) break;
-                }
-            }
-        }
-        var result = new ArrayList<Integer>();
-
-        for(var i=0;i<opcodes.size();i++){
-            result.add(opcodes.get(opcodes.size()-1-i));
-        }
-
-        return result;
-    }
     public void analyze(){
         classReader.accept(visitor, 0);
     }
