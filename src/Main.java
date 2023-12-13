@@ -8,8 +8,7 @@ public class Main {
 
         System.out.println("Count of declaring variables: " + analyzer.getDeclaringVariables());
         System.out.println("Count of conditional transition: " + analyzer.getConditionalTransition());
-        System.out.println("Count of methods: " + analyzer.getMethodCount());
-        System.out.println("Count of cycle: " + analyzer.getCycleCount());
+        System.out.println("Count of opcodes cycle: " + analyzer.calculateOpcodesCycle());
 
         System.out.println();
 
@@ -21,7 +20,6 @@ public class Main {
                 System.out.println(opcode);
             }
         }
-        System.out.println("Count of opcodes cycle: " + analyzer.calculateOpcodesCycle());
 
         System.out.println();
 

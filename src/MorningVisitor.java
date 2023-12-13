@@ -1,16 +1,12 @@
 import org.objectweb.asm.*;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-
 public class MorningVisitor extends ClassVisitor {
     private int fieldCount;
     private int localVariableCount;
-    private int methodCount;
     private int conditionalTransition;
-    private HashMap<String, ArrayList<Integer>> opcodes;
 
+    public MorningVisitor(int api) {
+        super(api);
+    }
     @Override
     public FieldVisitor visitField(int access, String name, String descriptor, String signature, Object value) {
         fieldCount++;
@@ -19,13 +15,12 @@ public class MorningVisitor extends ClassVisitor {
 
     @Override
     public MethodVisitor visitMethod(int access, String name, String descriptor, String signature, String[] exceptions) {
-        methodCount++;
-        var mv = super.visitMethod(Opcodes.ACC_PUBLIC, name, descriptor, signature, exceptions);
+        var mv = super.visitMethod(access, name, descriptor, signature, exceptions);
         return new MethodVisitor(super.api,mv) {
             @Override
-            public void visitTryCatchBlock(Label start, Label end, Label handler, String type) {
-                conditionalTransition++;
-                super.visitTryCatchBlock(start, end, handler, type);
+            public void visitLocalVariable(String name, String descriptor, String signature, Label start, Label end, int index) {
+                localVariableCount++;
+                super.visitLocalVariable(name, descriptor, signature, start, end, index);
             }
             @Override
             public void visitJumpInsn(int opcode, Label label) {
@@ -34,32 +29,16 @@ public class MorningVisitor extends ClassVisitor {
                 }
                 super.visitJumpInsn(opcode, label);
             }
-            @Override
-            public void visitLocalVariable(String name, String descriptor, String signature, Label start, Label end, int index) {
-                localVariableCount++;
-                super.visitLocalVariable(name, descriptor, signature, start, end, index);
-            }
         };
     }
 
-    public MorningVisitor(int api) {
-        super(api);
-        opcodes = new HashMap<>();
-    }
     public int getFieldCount(){
         return fieldCount;
     }
     public int getLocalVariableCount(){
         return localVariableCount;
     }
-    public int getMethodCount(){
-        return methodCount;
-    }
     public int getConditionalTransition(){
         return conditionalTransition;
-    }
-
-    public HashMap<String, ArrayList<Integer>> getOpcodes() {
-        return opcodes;
     }
 }
